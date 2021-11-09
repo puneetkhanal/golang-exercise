@@ -1,5 +1,10 @@
 package hash_app
 
+/**
+Interface of hashStore. Provides default implementation
+for memory store. If we need to interface to other external db,
+we can implement this interface e.g. RedisStore, PosgresStore, etc..
+ */
 type hashStore interface {
 	add(id int64, hash string) int64
 	get(id int64) string

@@ -1,5 +1,10 @@
 package hash_app
 
+/**
+Interface for stats calculator.
+Provides implementation for default aggregator.
+Other different aggregator can be implemented later.
+*/
 type aggregator interface {
 	add(totalTime int64)
 	get() Stats
