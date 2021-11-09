@@ -1,4 +1,4 @@
-package main
+package hash_app
 
 type hashStore interface {
 	add(id int64, hash string) int64

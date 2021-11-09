@@ -1,4 +1,4 @@
-package main
+package hash_app
 
 type aggregator interface {
 	add(totalTime int64)
