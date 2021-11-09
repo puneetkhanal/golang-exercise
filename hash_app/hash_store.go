@@ -4,6 +4,7 @@ type hashStore interface {
 	add(id int64, hash string) int64
 	get(id int64) string
 	getNextId() int64
+	reset()
 }
 
 type memoryStore struct {
@@ -23,6 +24,10 @@ func (h *memoryStore) get(id int64) string {
 func (h *memoryStore) getNextId() int64 {
 	h.idCounter++
 	return h.idCounter
+}
+
+func (h *memoryStore) reset() {
+	h.idCounter = 0
 }
 
 /*func main() {
