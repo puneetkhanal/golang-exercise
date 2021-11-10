@@ -23,12 +23,3 @@ func (h *shaHashingFunction) hash(value string) string {
 	sha512Sum := sha512.Sum512([]byte(value))
 	return base64.StdEncoding.EncodeToString(sha512Sum[:])
 }
-
-/*func main() {
-	fmt.Println("Hashing Function - tests")
-	s := simpleHashingFunction{}
-	h := shaHashingFunction{}
-
-	fmt.Println(s.hash("test"))
-	fmt.Println(h.hash("test"))
-}*/

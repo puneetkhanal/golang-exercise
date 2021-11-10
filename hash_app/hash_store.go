@@ -42,13 +42,3 @@ func (h *memoryStore) getNextId() int64 {
 func (h *memoryStore) reset() {
 	h.idCounter = 0
 }
-
-/*func main() {
-	fmt.Println("Hash Store tests")
-	r := memoryStore{ idCounter: 0, hashTable: map[int]string{}}
-	r.add("test")
-	r.add("test1")
-	fmt.Println(r.hashTable)
-	fmt.Println(r.get(1))
-	fmt.Println(r.get(2))
-}*/

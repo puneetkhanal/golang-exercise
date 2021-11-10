@@ -32,11 +32,3 @@ func (r *averageCalculator) get() Stats {
 		return Stats{Total: r.total, Average: r.totalTime / r.total}
 	}
 }
-
-/*func main() {
-	fmt.Println("Aggregator Test")
-	r := averageCalculator{ total: 0, totalTime: 0}
-	r.add(1)
-	fmt.Println(r.total)
-	fmt.Println(r.totalTime)
-}*/

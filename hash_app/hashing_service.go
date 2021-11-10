@@ -94,32 +94,3 @@ func (h *simpleHashingService) reset() {
 func (h *simpleHashingService) finishAllTasks() {
 	h.waitGroup.Wait()
 }
-
-
-/*func main() {
-	fmt.Println("Hashing Service")
-	s:= getHashingService()
-
-	//s.hashStore.idCounter=0
-	//s.hashStore.hashTable=map[int]string{}
-
-	s.hash("test1", time.Now())
-
-	fmt.Println(s.getHash(1))
-	fmt.Println(s.getStats())
-
-
-    s.hashWithDelay("test", time.Now())
-
-	time.Sleep(time.Second*10)
-
-	fmt.Println(s.getStats())
-}*/
-
-/*func getHashingService() *simpleHashingService {
-	return &simpleHashingService{
-		hashStore: &memoryStore{idCounter: 0, hashTable: map[int]string{}},
-		statsCalculator: &averageCalculator{total: 0, totalTime: 0},
-		hashingFunction: &shaHashingFunction{},
-	}
-}*/
