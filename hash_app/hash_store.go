@@ -1,6 +1,8 @@
 package hash_app
 
-import "sync"
+import (
+	"sync"
+)
 
 /**
 Interface for hashStore. Provides default implementation
@@ -24,6 +26,7 @@ type memoryStore struct {
 func (h *memoryStore) add(id int64, hash string) int64 {
 	h.writeLock.Lock()
 	defer h.writeLock.Unlock()
+	//log.Printf("hash %s\n", hash)
 	h.hashTable[id] = hash
 	return id
 }

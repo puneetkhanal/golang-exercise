@@ -89,19 +89,14 @@ func (hs *hashServer) start() error {
 // ref: https://medium.com/honestbee-tw-engineer/gracefully-shutdown-in-go-http-server-5f5e6b83da5a
 func (hs *hashServer) stop() {
 	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer func() {
-			// extra handling here
-			hs.hashingService.finishAllTasks()
-			cancel()
-		}()
-
+		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 		log.Println("Stopping Server and stop accepting new connections")
 
 		if err := hs.Server.Shutdown(ctx); err != nil {
 			log.Fatalf("Server Shutdown Failed:%+v", err)
 		}
 		log.Println("waiting for running task to complete")
+		hs.hashingService.finishAllTasks()
 		close(hs.Shutdown)
 	}()
 }
