@@ -5,6 +5,7 @@ import (
 	"log"
 	"regexp"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -17,6 +18,15 @@ const (
 	delay = 5 * time.Second
 )
 
+/**
+Interface for all operations for hashing operations.
+The rest controller/hashServer will use this interface,
+to execute different operations for the app. This hashing service
+by default injects memoryStore, shaHashingFunction for hashStore
+and hashingFunction. But this can be easily modified by passing
+different implementation for hashStore and shaHashingFunction. Thus,
+we have modularized each and every dependency for this hashing service.
+*/
 type hashingService interface {
 	hash(id int64, hash string, startTime time.Time) int64
 	hashWithDelay(hash string, startTime time.Time) int64
@@ -24,12 +34,14 @@ type hashingService interface {
 	getStats() Stats
 	getIdFromPath(path string) (int, error)
 	reset()
+	finishAllTasks()
 }
 
 type simpleHashingService struct {
 	hashStore       hashStore
-	aggregator      aggregator
+	aggregator      statsCalculator
 	hashingFunction hashingFunction
+	waitGroup       *sync.WaitGroup
 }
 
 func (h *simpleHashingService) hash(id int64, hash string, startTime time.Time) int64 {
@@ -43,8 +55,10 @@ func (h *simpleHashingService) hash(id int64, hash string, startTime time.Time) 
 
 func (h *simpleHashingService) hashWithDelay(hash string, startTime time.Time) int64 {
 	id := h.hashStore.getNextId()
+	h.waitGroup.Add(1)
 	go func() {
-		log.Printf("Hashing with delay %s \n", delay.String())
+		defer h.waitGroup.Done()
+		log.Printf("Will hash after delay of %s \n", delay.String())
 		time.Sleep(delay)
 		h.hash(id, hash, startTime)
 	}()
@@ -77,6 +91,11 @@ func (h *simpleHashingService) reset() {
 	h.hashStore.reset()
 }
 
+func (h *simpleHashingService) finishAllTasks() {
+	h.waitGroup.Wait()
+}
+
+
 /*func main() {
 	fmt.Println("Hashing Service")
 	s:= getHashingService()
@@ -100,7 +119,7 @@ func (h *simpleHashingService) reset() {
 /*func getHashingService() *simpleHashingService {
 	return &simpleHashingService{
 		hashStore: &memoryStore{idCounter: 0, hashTable: map[int]string{}},
-		aggregator: &defaultAggregator{total: 0, totalTime: 0},
+		statsCalculator: &averageCalculator{total: 0, totalTime: 0},
 		hashingFunction: &shaHashingFunction{},
 	}
 }*/

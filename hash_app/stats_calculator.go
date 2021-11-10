@@ -1,16 +1,16 @@
 package hash_app
 
 /**
-Interface for stats calculator.
-Provides implementation for default aggregator.
-Other different aggregator can be implemented later.
+Interface for statsCalculator.
+Provides implementation for default averageCalculator.
+Other different statsCalculator can be implemented later.
 */
-type aggregator interface {
+type statsCalculator interface {
 	add(totalTime int64)
 	get() Stats
 }
 
-type defaultAggregator struct {
+type averageCalculator struct {
 	total     int64
 	totalTime int64
 }
@@ -20,12 +20,12 @@ type Stats struct {
 	Average int64 `json:"average"`
 }
 
-func (r *defaultAggregator) add(totalTime int64) {
+func (r *averageCalculator) add(totalTime int64) {
 	r.total = r.total + 1
 	r.totalTime = r.totalTime + totalTime
 }
 
-func (r *defaultAggregator) get() Stats {
+func (r *averageCalculator) get() Stats {
 	if r.total == 0 {
 		return Stats{Total: 0, Average: 0}
 	} else {
@@ -35,7 +35,7 @@ func (r *defaultAggregator) get() Stats {
 
 /*func main() {
 	fmt.Println("Aggregator Test")
-	r := defaultAggregator{ total: 0, totalTime: 0}
+	r := averageCalculator{ total: 0, totalTime: 0}
 	r.add(1)
 	fmt.Println(r.total)
 	fmt.Println(r.totalTime)

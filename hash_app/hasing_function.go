@@ -5,6 +5,10 @@ import (
 	"encoding/base64"
 )
 
+/**
+Interface for hashing function. Provides implementation for
+sha512 hashing. Other hashing implementation can be also provided.
+*/
 type hashingFunction interface {
 	hash(value string) string
 }
@@ -13,10 +17,6 @@ type simpleHashingFunction struct {
 }
 
 type shaHashingFunction struct {
-}
-
-func (h *simpleHashingFunction) hash(value string) string {
-	return value
 }
 
 func (h *shaHashingFunction) hash(value string) string {
