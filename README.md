@@ -1,12 +1,12 @@
 # Hash App
 Application for hashing
 
-#Functional Requirement
+# Functional Requirement
 - Hash and encode password string
 - Password should be hashed after 5 seconds
 - Calculate average time for hash generation
 
-#Non Functional Requirement
+# Non Functional Requirement
 - App should be modular, it should be easy to switch between different flavors of implementation.
 - App should be scalable
 - App should have proper unit test coverage and good overall quality.
