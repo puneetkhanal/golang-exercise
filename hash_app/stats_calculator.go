@@ -1,5 +1,7 @@
 package hash_app
 
+import "sync"
+
 /**
 Interface for statsCalculator.
 Provides implementation for default averageCalculator.
@@ -13,6 +15,7 @@ type statsCalculator interface {
 type averageCalculator struct {
 	total     int64
 	totalTime int64
+	statsLock sync.RWMutex
 }
 
 type Stats struct {
@@ -21,11 +24,15 @@ type Stats struct {
 }
 
 func (r *averageCalculator) add(totalTime int64) {
+	r.statsLock.Lock()
+	defer r.statsLock.Unlock()
 	r.total = r.total + 1
 	r.totalTime = r.totalTime + totalTime
 }
 
 func (r *averageCalculator) get() Stats {
+	r.statsLock.RLock()
+	defer r.statsLock.RUnlock()
 	if r.total == 0 {
 		return Stats{Total: 0, Average: 0}
 	} else {

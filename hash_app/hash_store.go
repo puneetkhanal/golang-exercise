@@ -17,27 +17,28 @@ type hashStore interface {
 }
 
 type memoryStore struct {
-	idLock    sync.RWMutex
-	writeLock sync.RWMutex
+	lock      sync.RWMutex
 	idCounter int64            `default:"1"`
 	hashTable map[int64]string `default:"{}"`
 }
 
 func (h *memoryStore) add(id int64, hash string) int64 {
-	h.writeLock.Lock()
-	defer h.writeLock.Unlock()
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	//log.Printf("hash %s\n", hash)
 	h.hashTable[id] = hash
 	return id
 }
 
 func (h *memoryStore) get(id int64) string {
+	h.lock.RLock()
+	defer h.lock.RUnlock()
 	return h.hashTable[id]
 }
 
 func (h *memoryStore) getNextId() int64 {
-	h.idLock.Lock()
-	defer h.idLock.Unlock()
+	h.lock.Lock()
+	defer h.lock.Unlock()
 	h.idCounter++
 	return h.idCounter
 }
