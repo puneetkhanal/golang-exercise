@@ -50,7 +50,7 @@ func (hs *hashServer) getHandler() http.HandlerFunc {
 				http.Error(w, err.Error(), http.StatusNotFound)
 				return
 			}
-			hash := hs.hashingService.getHash(int64(id))
+			hash := hs.hashingService.getHash(int32(id))
 			fmt.Fprintf(w, "%s", hash)
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -120,7 +120,7 @@ func GetHashServer(address string, port string) *hashServer {
 
 func getHashingService() hashingService {
 	return &simpleHashingService{
-		hashStore:       &memoryStore{idCounter: 0, hashTable: map[int64]string{}},
+		hashStore:       &memoryStore{idCounter: 0, hashTable: map[int32]string{}},
 		aggregator:      &averageCalculator{total: 0, totalTime: 0},
 		hashingFunction: &shaHashingFunction{},
 		waitGroup:       &sync.WaitGroup{},

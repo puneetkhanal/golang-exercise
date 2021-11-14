@@ -66,8 +66,8 @@ func TestAggregator(t *testing.T) {
 	fmt.Println(hashingService.getStats())
 
 	stats := hashingService.getStats()
-	assertEquals(t, stats.Total, int64(2))
-	assertEquals(t, stats.Average >= 5000, true)
+	assertEquals(t, stats.Total, int32(2))
+	assertEquals(t, stats.Average >= float32(5000), true)
 }
 
 // This seems to best approach for fluent assertions.

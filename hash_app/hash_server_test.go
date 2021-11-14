@@ -75,8 +75,8 @@ func TestGetStatsNoData(t *testing.T) {
 	data := Stats{}
 	json.Unmarshal([]byte(w.Body.String()), &data)
 
-	assertEquals(t, data.Average, int64(0))
-	assertEquals(t, data.Total, int64(0))
+	assertEquals(t, data.Average, float32(0))
+	assertEquals(t, data.Total, int32(0))
 }
 
 func TestShutDown(t *testing.T) {

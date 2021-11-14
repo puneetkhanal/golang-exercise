@@ -28,9 +28,9 @@ different implementation for hashStore and shaHashingFunction. Thus,
 we have modularized each and every dependency for this hashing service.
 */
 type hashingService interface {
-	hash(id int64, hash string, startTime time.Time) int64
-	hashWithDelay(hash string, startTime time.Time) int64
-	getHash(id int64) string
+	hash(id int32, hash string, startTime time.Time) int32
+	hashWithDelay(hash string, startTime time.Time) int32
+	getHash(id int32) string
 	getStats() Stats
 	getIdFromPath(path string) (int, error)
 	reset()
@@ -44,16 +44,16 @@ type simpleHashingService struct {
 	waitGroup       *sync.WaitGroup
 }
 
-func (h *simpleHashingService) hash(id int64, hash string, startTime time.Time) int64 {
+func (h *simpleHashingService) hash(id int32, hash string, startTime time.Time) int32 {
 	s := h.hashingFunction.hash(hash)
 	h.hashStore.add(id, s)
 	interval := time.Now().Sub(startTime)
 	var ms = int64(time.Millisecond)
-	h.aggregator.add(interval.Nanoseconds() / ms)
+	h.aggregator.add(int32(interval.Nanoseconds() / ms))
 	return id
 }
 
-func (h *simpleHashingService) hashWithDelay(hash string, startTime time.Time) int64 {
+func (h *simpleHashingService) hashWithDelay(hash string, startTime time.Time) int32 {
 	id := h.hashStore.getNextId()
 	h.waitGroup.Add(1)
 	go func() {
@@ -65,7 +65,7 @@ func (h *simpleHashingService) hashWithDelay(hash string, startTime time.Time) i
 	return id
 }
 
-func (h *simpleHashingService) getHash(id int64) string {
+func (h *simpleHashingService) getHash(id int32) string {
 	return h.hashStore.get(id)
 }
 
