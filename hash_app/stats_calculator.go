@@ -19,15 +19,15 @@ type averageCalculator struct {
 }
 
 type Stats struct {
-	Total   int32 `json:"total"`
+	Total   int32   `json:"total"`
 	Average float32 `json:"average"`
 }
 
 func (r *averageCalculator) add(totalTime int32) {
 	r.statsLock.Lock()
 	defer r.statsLock.Unlock()
-	r.total = r.total + 1
-	r.totalTime = r.totalTime + totalTime
+	r.total += 1
+	r.totalTime += totalTime
 }
 
 func (r *averageCalculator) get() Stats {

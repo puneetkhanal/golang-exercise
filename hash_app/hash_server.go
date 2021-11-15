@@ -7,7 +7,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -74,7 +76,7 @@ func (hs *hashServer) getShutdownHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
-			hs.stop()
+			hs.Stop()
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
@@ -86,8 +88,8 @@ func (hs *hashServer) start() error {
 	return hs.Server.ListenAndServe()
 }
 
-// ref: https://medium.com/honestbee-tw-engineer/gracefully-shutdown-in-go-http-server-5f5e6b83da5a
-func (hs *hashServer) stop() {
+// Stop ref: https://medium.com/honestbee-tw-engineer/gracefully-shutdown-in-go-http-server-5f5e6b83da5a
+func (hs *hashServer) Stop() {
 	go func() {
 		ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 		log.Println("Stopping Server and stop accepting new connections")
@@ -106,6 +108,7 @@ func GetHashServer(address string, port string) *hashServer {
 
 	newHashServer.hashingService = getHashingService()
 	newHashServer.Shutdown = make(chan os.Signal, 1)
+	signal.Notify(newHashServer.Shutdown, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	mux := http.NewServeMux()
 	mux.Handle("/hash", newHashServer.postHandler())

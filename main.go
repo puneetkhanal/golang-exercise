@@ -3,6 +3,7 @@ package main
 import (
 	hashApp "hash/app/hash_app"
 	"log"
+	"syscall"
 )
 
 func main() {
@@ -17,7 +18,11 @@ func main() {
 
 	log.Print("Server Started")
 
-	// block main thread until channel is closed by invoking /shutdown api
-	<-hashServer.Shutdown
+	// block main thread until channel is closed by invoking /shutdown api or syscall.SIGINT and syscall.SIGTERM
+	ch := <-hashServer.Shutdown
+	if ch == syscall.SIGINT || ch == syscall.SIGTERM {
+		hashServer.Stop()
+		<-hashServer.Shutdown
+	}
 	log.Print("Server Exited Properly")
 }
