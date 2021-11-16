@@ -104,10 +104,11 @@ func (hs *hashServer) Stop() {
 }
 
 func GetHashServer(address string, port string) *hashServer {
-	newHashServer := &hashServer{}
+	newHashServer := &hashServer{
+		hashingService: getHashingService(),
+		Shutdown: make(chan os.Signal, 1),
+	}
 
-	newHashServer.hashingService = getHashingService()
-	newHashServer.Shutdown = make(chan os.Signal, 1)
 	signal.Notify(newHashServer.Shutdown, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	mux := http.NewServeMux()
@@ -124,7 +125,7 @@ func GetHashServer(address string, port string) *hashServer {
 func getHashingService() hashingService {
 	return &simpleHashingService{
 		hashStore:       &memoryStore{idCounter: 0, hashTable: map[int32]string{}},
-		aggregator:      &averageCalculator{total: 0, totalTime: 0},
+		statsCalculator: &averageCalculator{total: 0, totalTime: 0},
 		hashingFunction: &shaHashingFunction{},
 		waitGroup:       &sync.WaitGroup{},
 	}

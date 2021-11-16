@@ -24,7 +24,7 @@ The rest controller/hashServer will use this interface,
 to execute different operations for the app. This hashing service
 by default injects memoryStore, shaHashingFunction for hashStore
 and hashingFunction. But this can be easily modified by passing
-different implementation for hashStore and shaHashingFunction. Thus,
+different implementation for hashStore and hashingFunction. Thus,
 we have modularized each and every dependency for this hashing service.
 */
 type hashingService interface {
@@ -39,7 +39,7 @@ type hashingService interface {
 
 type simpleHashingService struct {
 	hashStore       hashStore
-	aggregator      statsCalculator
+	statsCalculator statsCalculator
 	hashingFunction hashingFunction
 	waitGroup       *sync.WaitGroup
 }
@@ -49,7 +49,7 @@ func (h *simpleHashingService) hash(id int32, hash string, startTime time.Time) 
 	h.hashStore.add(id, s)
 	interval := time.Now().Sub(startTime)
 	var ms = int64(time.Millisecond)
-	h.aggregator.add(int32(interval.Nanoseconds() / ms))
+	h.statsCalculator.add(int32(interval.Nanoseconds() / ms))
 	return id
 }
 
@@ -70,7 +70,7 @@ func (h *simpleHashingService) getHash(id int32) string {
 }
 
 func (h *simpleHashingService) getStats() Stats {
-	return h.aggregator.get()
+	return h.statsCalculator.get()
 }
 
 func (h *simpleHashingService) getIdFromPath(path string) (int, error) {

@@ -37,7 +37,7 @@ The current approach of delaying hash generation using sleep is not scalable. If
 requests coming in, then there will be thousands of threads sleeping. To handle this situation we need to have
 a taskScheduler that will submit task to in memory delay queue where items are sorted based on timestamp 
 or pubsub topic with message delay (e.g. Apache Pulsar supports submitting message with
-delay) or Redis delay queue which is sorted based on timestamp. This is a future ehancement.
+delay) or Redis delay queue which is sorted based on timestamp. This is a future enhancement.
 
 # Resources
 
